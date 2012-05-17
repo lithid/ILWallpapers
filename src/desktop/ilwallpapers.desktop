@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=0.4
+Name=InterfaceLift Wallpapers
+Name[en_US]=InterfaceLift Wallpapers
+GenericName=InterfaceLift Wallpapers
+Comment=Set wallpapers from Interfacelift
+Exec=/usr/bin/ilwallpapers
+Terminal=false
+Icon=/usr/share/ilwallpapers/images/Icon.png
+Type=Application
+Categories=GTK;Development;

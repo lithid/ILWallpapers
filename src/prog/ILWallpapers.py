@@ -18,15 +18,14 @@ import threading
 
 gtk.threads_init()
 
-CUR = os.getcwd()
 myHome = os.environ['HOME']
 WallStore = "%s/Pictures/InterfaceLift" % myHome
 Url = "http://interfacelift.com/wallpaper/downloads/date"
 UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)"
 DownloadUrl = "http://interfacelift.com"
 PreviewUrl = "%s/wallpaper/previews" % DownloadUrl
-Icon = "%s/Icon.png" % CUR
-SplashImg = "%s/Interfacelift.jpg" % CUR
+Icon = "/usr/share/ilwallpapers/images/Icon.png"
+SplashImg = "/usr/share/ilwallpapers/images/Interfacelift.jpg"
 
 placeIcon = gtk.gdk.pixbuf_new_from_file(Icon)
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+# Wrapper for ilwallpapers
+
+DIR="/usr/share/ilwallpapers/prog"
+python $DIR/ILWallpapers.py

@@ -45,7 +45,9 @@ class SplashScreenThread(threading.Thread):
 
 		while not self.stopthread.isSet():
 			gtk.threads_enter()
+
 			SplashScreen().main()
+
 			gtk.threads_leave()
 			self.stop()
 
@@ -277,8 +279,5 @@ class InterfaceWallpapers():
 		dialog.destroy()
 
 if __name__ == "__main__":
-	SST = SplashScreenThread()
-	SST.start()
-	time.sleep(2)
-	MT = MainThread()
-	MT.start()
+	SplashScreenThread().start()
+	MainThread().start()

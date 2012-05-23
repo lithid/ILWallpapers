@@ -105,7 +105,11 @@ class InterfaceWallpapers():
 	def GetImages(self, version, dem):
 		global myList
 		FinUrl = "%s/%s/%s/" % (Url, version, dem,)
-		htmlpage = urllib2.urlopen(FinUrl).read()
+		try:
+			htmlpage = urllib2.urlopen(FinUrl).read()
+		except: URLError:
+			print "Error reaching the interfacelift.com website. Exiting."
+			exit()
 		alllinks = re.findall("<a href=\".*?_%s.jpg\">.*?</a>" % dem,htmlpage)
 
 		for links in alllinks:

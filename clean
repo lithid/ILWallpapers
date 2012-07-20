@@ -4,6 +4,7 @@
 rm -rf debian/ilwallpapers-daily/
 rm -rf debian/ilwallpapers-daily.substvars
 rm -rf debian/*.log
+rm -rf debian/files
 
 rm -rf ../ilwallpapers-daily_*
 

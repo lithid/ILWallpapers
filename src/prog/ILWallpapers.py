@@ -29,7 +29,8 @@ SplashImg = "/usr/share/ilwallpapers/images/Interfacelift.jpg"
 
 placeIcon = gtk.gdk.pixbuf_new_from_file(Icon)
 
-myWallList = []
+myMainWallList = []
+myMainWallList2 = []
 WallSet = None
 FinName = None
 Spanned = None
@@ -105,8 +106,8 @@ class SplashScreen():
 
 class InterfaceWallpapers():
 
-	def GetImages(self, version, dem):
-		global myList
+	def GetImages(self, version, dem, mon):
+		print mon
 		FinUrl = "%s/%s/%s/" % (Url, version, dem,)
 		try:
 			htmlpage = urllib2.urlopen(FinUrl).read()
@@ -118,17 +119,55 @@ class InterfaceWallpapers():
 		for links in alllinks:
 			x = links.split("\"")
 			x = x[1]
-			myWallList.append(x)
+			if mon == "one":
+				myMainWallList.append(x)
+			elif mon == "two":
+				myMainWallList2.append(x)
+			else:
+				print "Don't know what you are doing, please just stop it"
 
 		return
 
 	def GetVersion(self, version):
 		final = None
-		widescreen = ["2880x1800", "2560x1600", "2560x1440", "1920x1200", "1680x1050", "1440x900", "1280x800"]
-		for x in widescreen:
-			if version == x:
-				final = "widescreen"
+		print version
 
+		if version == "3840x1080":
+			version = "3360x1050"
+			
+		if version == "2560x720":
+			version == "2880x900"
+			
+		print version
+
+		netbook = ["1366x768", "1280x800", "1024x600", "800x400"]
+		fullscreen = ["1600x1200", "1400x1050", "1280x1024", "1280x960", "1024x768"]
+		widescreen = ["2880x1800", "2560x1600", "2560x1440", "1920x1200", "1680x1050", "1440x900", "1280x800"]
+		HDTV = ["1920x1080", "1280x720"]
+		screens2 = ["2560x1024", "2880x900", "3200x1200", "3360x1050", "2840x1200", "5120x1600"]
+		
+		if final == None:
+			for x in netbook:
+				if version == x:
+					final = "netbook"
+		if final == None:
+			for x in fullscreen:
+				if version == x:
+					final = "fullscreen"
+		if final == None:
+			for x in widescreen:
+				if version == x:
+					final = "widescreen"
+		if final == None:
+			for x in HDTV:
+				if version == x:
+					final = "HDTV"
+		if final == None:
+			for x in screens2:
+				if version == x:
+					final = "2_screens"
+
+		print final
 		return final
 
 	def GetMonitors(self):
@@ -138,7 +177,7 @@ class InterfaceWallpapers():
 	def GetWidth(self):
 		window = gtk.Window()
 		screen = window.get_screen()
-		width = str(screen.get_width())
+		width = screen.get_width()
 		return width
 
 	def GetHeight(self):
@@ -207,55 +246,124 @@ class InterfaceWallpapers():
 		dialog.set_resizable(False)
 		dialog.set_icon(placeIcon)
 
-		c = self.GetMonitors()
+		monitors = self.GetMonitors()
 		w = self.GetWidth()
 		h = self.GetHeight()
+		if monitors == "2":
+		        single = str(w / 2)
+		        
+		w = str(w)
 
 		wh = "%sx%s" % (w, h)
-		v = self.GetVersion(wh)
+		swh = "%sx%s" % (single, h)
 
-		i = self.GetImages(v, wh)
+		v = self.GetVersion(wh)
+		sv = self.GetVersion(swh)
+
+		self.GetImages(v, wh, "one")
+		
+		if monitors == "2":
+			self.GetImages(sv, swh, "two")
 
 		label.set_markup("Choose your wallpaper from below...")
 		label.show()
 		dialog.vbox.pack_start(label, True, True, 15)
 
-		mainScroll = gtk.ScrolledWindow()
-		mainScroll.set_size_request(600, 180)
-		mainScroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-		mainScroll.show()
-		dialog.vbox.pack_start(mainScroll, True, True, 0)
+		if v is not None:
+			mainLabel = gtk.Label()
+			if monitors == "2":
+				head = "Dual Screen"
+			else:
+				head = "Single Screen"
+			mainLabel.set_markup("%s: <b>%s x %s</b>" % (head, w, h))
+			mainLabel.show()
+			dialog.vbox.pack_start(mainLabel, True, True, 0)
+			mainScroll = gtk.ScrolledWindow()
+			mainScroll.set_size_request(600, 180)
+			mainScroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+			mainScroll.show()
+			dialog.vbox.pack_start(mainScroll, True, True, 0)
 
-		mainTable = gtk.Table(10, 1, False)
+			mainTable = gtk.Table(10, 1, False)
 
-		mainScroll.add_with_viewport(mainTable)
-		mainTable.show()
+			mainScroll.add_with_viewport(mainTable)
+			mainTable.show()
 
-		count = 0
-		for x in myWallList:
-			count+=1
+			count = 0
+			for x in myMainWallList:
+				count+=1
 
-			event = "event%s" % (count)
-			image = "image%s" % (count)
+				event = "event%s" % (count)
+				image = "image%s" % (count)
 
-			event = gtk.EventBox()
-			image = gtk.Image()
-			preview = x.replace("_%s" % wh, "")
-			preview = preview.split("/")
-			preview = preview[-1]
-			PreWall = "%s/%s" % (PreviewUrl, preview)
-			FinWall = "%s%s" % (DownloadUrl, x)
-			imgurl = urllib2.urlopen(PreWall)
-			loader = gtk.gdk.PixbufLoader()
-			loader.write(imgurl.read())
-			loader.close() 
-			image.set_from_pixbuf(loader.get_pixbuf())
-			event.connect("button_press_event", self.WallpaperCallback, FinWall, preview, x)
-			event.add(image)
-			mainTable.attach(event, count-1, count, 0, 1, xpadding=5, ypadding=5)
-			image.show()
-			event.show()
+				event = gtk.EventBox()
+				image = gtk.Image()
+				preview = x.replace("_%s" % wh, "")
+				preview = preview.split("/")
+				preview = preview[-1]
+				PreWall = "%s/%s" % (PreviewUrl, preview)
+				FinWall = "%s%s" % (DownloadUrl, x)
+				imgurl = urllib2.urlopen(PreWall)
+				loader = gtk.gdk.PixbufLoader()
+				loader.write(imgurl.read())
+				loader.close() 
+				image.set_from_pixbuf(loader.get_pixbuf())
+				event.connect("button_press_event", self.WallpaperCallback, FinWall, preview, x)
+				event.add(image)
+				mainTable.attach(event, count-1, count, 0, 1, xpadding=5, ypadding=5)
+				image.show()
+				event.show()
+			
+			
+		if monitors == "2" and sv is not None:
+			Label2 = gtk.Label()
+			head2 = "Single Screen"
+			Label2.set_markup("%s: <b>%s x %s</b>" % (head2, single, h))
+			Label2.show()
+			dialog.vbox.pack_start(Label2, True, True, 0)
+			Scroll2 = gtk.ScrolledWindow()
+			Scroll2.set_size_request(600, 180)
+			Scroll2.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+			Scroll2.show()
+			dialog.vbox.pack_start(Scroll2, True, True, 0)
 
+			Table2 = gtk.Table(10, 1, False)
+
+			Scroll2.add_with_viewport(Table2)
+			Table2.show()
+
+			count = 0
+			for x in myMainWallList2:
+				count+=1
+
+				event = "event%s" % (count)
+				image = "image%s" % (count)
+
+				event = gtk.EventBox()
+				image = gtk.Image()
+				preview = x.replace("_%s" % swh, "")
+				preview = preview.split("/")
+				preview = preview[-1]
+				PreWall = "%s/%s" % (PreviewUrl, preview)
+				FinWall = "%s%s" % (DownloadUrl, x)
+				imgurl = urllib2.urlopen(PreWall)
+				loader = gtk.gdk.PixbufLoader()
+				loader.write(imgurl.read())
+				loader.close() 
+				image.set_from_pixbuf(loader.get_pixbuf())
+				event.connect("button_press_event", self.WallpaperCallback, FinWall, preview, x)
+				event.add(image)
+				Table2.attach(event, count-1, count, 0, 1, xpadding=5, ypadding=5)
+				image.show()
+				event.show()
+				
+		if sv == None and v == None:
+			LabelBad = gtk.Label()
+			LabelBad.set_markup("Sorry, Couldn't find monitors attached. This is bad, report it.")
+			LabelBad.show()
+			dialog.vbox.pack_start(LabelBad, True, True, 0)
+			
+			
 		secondTable = gtk.Table(3, 1, False)
 		secondTable.show()
 

@@ -38,6 +38,11 @@ Clean = None
 SplashW = gtk.Window(gtk.WINDOW_TOPLEVEL)
 label = gtk.Label()
 
+try:
+	os.makedirs(WallStore)
+except:
+	pass
+
 class SplashScreenThread(threading.Thread):
 	stopthread = threading.Event()
 

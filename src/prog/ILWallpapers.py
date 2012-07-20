@@ -107,7 +107,7 @@ class InterfaceWallpapers():
 		FinUrl = "%s/%s/%s/" % (Url, version, dem,)
 		try:
 			htmlpage = urllib2.urlopen(FinUrl).read()
-		except: URLError:
+		except:
 			print "Error reaching the interfacelift.com website. Exiting."
 			exit()
 		alllinks = re.findall("<a href=\".*?_%s.jpg\">.*?</a>" % dem,htmlpage)
@@ -283,5 +283,6 @@ class InterfaceWallpapers():
 		dialog.destroy()
 
 if __name__ == "__main__":
-	SplashScreenThread().start()
+	SST = SplashScreenThread()
+	SST.start()
 	MainThread().start()

@@ -1,0 +1,10 @@
+#!/bin/bash
+# Cleanup script for ilwallpapers
+
+rm -rf debian/ilwallpapers-daily/
+rm -rf debian/ilwallpapers-daily.substvars
+rm -rf debian/*.log
+
+rm -rf ../ilwallpapers-daily_*
+
+exit 0

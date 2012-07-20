@@ -100,8 +100,6 @@ class SplashScreen():
 		vbox.add(event)
 		SplashW.add(vbox)
 		SplashW.show_all()
-		while gtk.events_pending():
-            		gtk.main_iteration()
 
 		gtk.main()
 
@@ -290,4 +288,5 @@ class InterfaceWallpapers():
 if __name__ == "__main__":
 	SST = SplashScreenThread()
 	SST.start()
+	time.sleep(1)
 	MainThread().start()

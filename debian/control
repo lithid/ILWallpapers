@@ -1,4 +1,4 @@
-Source: ilwallpapers-daily
+Source: ilwallpapers
 Section: devel
 Priority: optional
 Maintainer: lithid <long.jeremie@gmail.com>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7.4.15)
 Standards-Version: 3.9.2
 Homepage: N/A
 
-Package: ilwallpapers-daily
+Package: ilwallpapers
 Architecture: any
 Depends: python, python-gtk2
 Description: InterfaceLift Wallpapers daily builds

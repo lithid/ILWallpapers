@@ -241,6 +241,9 @@ class InterfaceWallpapers():
 		gtk.main_quit()
 
 	def main(self):
+	
+		s = None
+		sv = None
 
 		dialog = gtk.Dialog("Download InterfaceLift Wallpapers", None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		dialog.set_resizable(False)
@@ -255,10 +258,14 @@ class InterfaceWallpapers():
 		w = str(w)
 
 		wh = "%sx%s" % (w, h)
-		swh = "%sx%s" % (single, h)
+		
+		if monitors == "2":
+			swh = "%sx%s" % (single, h)
 
 		v = self.GetVersion(wh)
-		sv = self.GetVersion(swh)
+		
+		if monitors == "2":
+			sv = self.GetVersion(swh)
 
 		self.GetImages(v, wh, "one")
 		

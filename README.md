@@ -15,7 +15,7 @@ Build:
     
 Install:
 
-    sudo dpkg -i ../ilwallpapers-daily_0.1_$(uname -i).deb
+    sudo dpkg -i ../ilwallpapers-daily_0.1_$(dpkg-architecture |grep "DEB_BUILD_ARCH=" |cut -d"=" -f2).deb
     
     
 You can also install using my PPA:

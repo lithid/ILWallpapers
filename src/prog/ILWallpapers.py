@@ -27,6 +27,8 @@ PreviewUrl = "%s/wallpaper/previews" % DownloadUrl
 Icon = "/usr/share/ilwallpapers/images/Icon.png"
 SplashImg = "/usr/share/ilwallpapers/images/Interfacelift.jpg"
 
+headers = { 'User-Agent' : 'Mozilla/5.0' }
+
 placeIcon = gtk.gdk.pixbuf_new_from_file(Icon)
 
 myMainWallList = []
@@ -108,11 +110,13 @@ class InterfaceWallpapers():
 
 	def GetImages(self, version, dem, mon):
 		print mon
-		FinUrl = "%s/%s/%s/" % (Url, version, dem,)
+		FinUrl = "%s/%s/%s" % (Url, version, dem)
+		req = urllib2.Request(FinUrl, None, headers)
 		try:
-			htmlpage = urllib2.urlopen(FinUrl).read()
+			htmlpage = urllib2.urlopen(req).read()
 		except:
-			print "Error reaching the interfacelift.com website. Exiting."
+			print "Error reaching the interfacelift.com website. Exiting.\nUrl: %s" % FinUrl
+			SplashScreenThread().stop()
 			exit()
 		alllinks = re.findall("<a href=\".*?_%s.jpg\">.*?</a>" % dem,htmlpage)
 
@@ -197,7 +201,10 @@ class InterfaceWallpapers():
 				os.makedirs(WallStore)
 
 		location = "%s/%s" % (WallStore, FinName)
-		urllib.urlretrieve(WallSet, location)
+		req = urllib2.Request(WallSet, None, headers)
+		f = open(location, 'wb')
+		f.write(urllib2.urlopen(req).read())
+		f.close()
 		cmd = "gsettings set org.gnome.desktop.background picture-uri file://%s" % location
 		commands.getoutput(cmd)
 		if Spanned == True:
@@ -236,8 +243,7 @@ class InterfaceWallpapers():
 		FinName = f[-1]
 
 	def main_quit():
-		global SS
-		SS.stop()
+		SplashScreenThread().stop()
 		gtk.main_quit()
 
 	def main(self):
@@ -310,10 +316,18 @@ class InterfaceWallpapers():
 				preview = preview[-1]
 				PreWall = "%s/%s" % (PreviewUrl, preview)
 				FinWall = "%s%s" % (DownloadUrl, x)
-				imgurl = urllib2.urlopen(PreWall)
+				req = urllib2.Request(PreWall, None, headers)
+				try:
+					img = urllib2.urlopen(req)
+					imgurl = img.read()
+					img.close()
+				except:
+					print "Error reaching the interfacelift.com website. Exiting.\nUrl: %s" % PreWall
+					SplashScreenThread().stop()
+					exit()
 				loader = gtk.gdk.PixbufLoader()
-				loader.write(imgurl.read())
-				loader.close() 
+				loader.write(imgurl)
+				loader.close()
 				image.set_from_pixbuf(loader.get_pixbuf())
 				event.connect("button_press_event", self.WallpaperCallback, FinWall, preview, x)
 				event.add(image)

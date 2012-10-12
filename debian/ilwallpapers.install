@@ -1,4 +1,3 @@
-src/ilwallpapers usr/bin/
-src/prog/*.py usr/share/ilwallpapers/prog/
-src/images/* usr/share/ilwallpapers/images/
-src/desktop/* usr/share/applications/
+share/ilwallpapers usr/bin/
+share/images/* usr/share/ilwallpapers/images/
+share/desktop/* usr/share/applications/
